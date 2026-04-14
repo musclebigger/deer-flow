@@ -282,3 +282,25 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+from langchain.tools import tool
+
+
+@tool("run_meeting", parse_docstring=True)
+def run_meeting_tool(session_id: str) -> str:
+    """读取 session CSV，执行完整会议创建流程：登录→枚举解析→创建→提交→验证，返回 meeting_id。
+
+    Args:
+        session_id: 由 write_session 工具生成的 session ID。
+    """
+    try:
+        cfg = read_csv(session_id)
+    except FileNotFoundError as e:
+        return f"[error] {e}"
+
+    try:
+        meeting_id = run(cfg)
+        return json.dumps({"meeting_id": meeting_id, "session_id": session_id}, ensure_ascii=False)
+    except Exception as e:
+        return f"[error] {e}"

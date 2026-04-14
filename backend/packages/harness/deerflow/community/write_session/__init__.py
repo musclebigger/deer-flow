@@ -116,3 +116,28 @@ def main():
 if __name__ == "__main__":
     main()
 
+
+from langchain.tools import tool
+
+
+@tool("write_session", parse_docstring=True)
+def write_session_tool(fields_json: str) -> str:
+    """将用户确认的会议表单字段写入 CSV，返回 session_id 和文件路径。
+
+    Args:
+        fields_json: 用户确认的字段值 JSON 字符串，只需传入与默认值不同的字段，如 '{"province": "安徽", "city": "合肥"}'。
+    """
+    try:
+        overrides = json.loads(fields_json)
+    except json.JSONDecodeError as e:
+        return f"[error] JSON 解析失败: {e}"
+
+    cfg = dict(DEFAULT_CONFIG)
+    for key, val in overrides.items():
+        if key in cfg:
+            cfg[key] = val
+
+    sid = new_session_id()
+    path = write_csv(sid, cfg)
+    return json.dumps({"session_id": sid, "csv_path": path}, ensure_ascii=False)
+
