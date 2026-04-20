@@ -1,2 +1,3 @@
-from tools.run_meeting import main
+from . import main
+
 main()

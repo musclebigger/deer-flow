@@ -1,2 +1,3 @@
-from tools.write_session import main
+from . import main
+
 main()

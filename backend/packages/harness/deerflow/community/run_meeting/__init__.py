@@ -13,8 +13,9 @@ import csv
 import json
 import os
 import sys
-import uuid
+
 import requests
+from langchain.tools import tool
 
 # Windows 终端中文输出
 if sys.platform == "win32":
@@ -282,9 +283,6 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-from langchain.tools import tool
 
 
 @tool("run_meeting", parse_docstring=True)
