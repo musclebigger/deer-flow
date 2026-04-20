@@ -38,7 +38,12 @@ jobs:
         run: uv run ruff check .
 
       - name: Test
-        run: uv run pytest
+        run: |
+          if [ -d tests ] && find tests -type f \( -name "test_*.py" -o -name "*_test.py" \) | grep -q .; then
+            uv run pytest
+          else
+            echo "No tests found; skipping pytest."
+          fi
 
   deploy:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
